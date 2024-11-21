@@ -1,34 +1,36 @@
-import re
-import nltk
-nltk.download('punkt_tab')  #Used for tokenization
-nltk.download('wordnet')  #Provides the lexical database needed for lemmatization.
+import math
 
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer
-import string
-nltk.download('stopwords')
-nltk.download('punkt')
-stop_words = set(stopwords.words('english')) 
-
-stemmer = PorterStemmer()
-lemmatizer = WordNetLemmatizer()
-
-def create_shingles(string):
+def char_vec(seen_movies, all_movies):
     '''
-    The function takes a string as input and preprocesses it to create unigram shingles.
-    These shingles are prepared tokens that are cleaned and normalized, making them suitable
-    for further tasks such as minhashing.
+    Create a characteristic vector for a user's seen movies.
+    For each movie ID in all_movies, add 1 to the vector if the movie
+    is in the user's seen_movies list, otherwise add 0.
     '''
+    v = []
+    for i in all_movies:
+        if i in seen_movies:
+            v.append(1)
+        else:
+            v.append(0)
+    return v
 
-    if not isinstance(string, str):
-        return []
-    string = string.lower()
-    string = re.sub(r'\s+', ' ', string).strip()
-    string = re.sub(r'-', ' ', string) 
-    tokens = word_tokenize(string)
-    shingles = [token for token in tokens if token.isalnum()]
-    shingles = [token for token in shingles if token not in stop_words]
+def create_signature(vec, hash_functions):
+    '''
+    Generate a MinHash signature for a given characteristic vector.
 
-    return shingles
+    Parameters:
+    - vec: A characteristic vector (binary list) representing a set.
+    - hash_functions: A list of hash functions to apply.
+
+    Returns:
+    - sign: A list containing the MinHash signature, where each entry
+            is the minimum hash value of indices corresponding to 1 in vec.
+    '''
+    k = len(hash_functions)
+    sign = [math.inf]*k #initialize to inf
+    for i in range(k):
+        for indx, value in enumerate(vec):
+            if value == 1:  # Update if value is 1
+                if hash_functions[i](indx) < sign[i]:  # Apply the i-th hash function
+                        sign[i] = hash_functions[i](indx)
+    return sign
