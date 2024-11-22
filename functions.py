@@ -1,18 +1,12 @@
 import math
-
-def char_vec(seen_movies, all_movies):
+import numpy as np
+def char_vec(seen_movies : set, all_movies : list):
     '''
     Create a characteristic vector for a user's seen movies.
     For each movie ID in all_movies, add 1 to the vector if the movie
     is in the user's seen_movies list, otherwise add 0.
     '''
-    v = []
-    for i in all_movies:
-        if i in seen_movies:
-            v.append(1)
-        else:
-            v.append(0)
-    return v
+    return np.isin(all_movies, seen_movies).astype(int)
 
 def create_signature(vec, hash_functions):
     '''
@@ -34,3 +28,5 @@ def create_signature(vec, hash_functions):
                 if hash_functions[i](indx) < sign[i]:  # Apply the i-th hash function
                         sign[i] = hash_functions[i](indx)
     return sign
+
+
