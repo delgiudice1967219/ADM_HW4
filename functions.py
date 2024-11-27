@@ -1,12 +1,24 @@
 import math
 import numpy as np
-def char_vec(seen_movies : set, all_movies : list):
+
+def char_vec(seen_movies : set, all_movies_broadcast ):
     '''
     Create a characteristic vector for a user's seen movies.
-    For each movie ID in all_movies, add 1 to the vector if the movie
-    is in the user's seen_movies list, otherwise add 0.
+
+    Parameters:
+    - seen_movies (set): A set of movie IDs that the user has seen.
+    - all_movies (set): A set of all possible movie IDs..
+
+    Returns:
+    - numpy.ndarray: A binary vector of length `len(all_movies)`, 
+      where 1 indicates that the user has seen the movie and 0 indicates they have not.
     '''
-    return np.isin(all_movies, seen_movies).astype(int)
+    all_movies = all_movies_broadcast.value
+    vector = [1 if movie in seen_movies else 0 for movie in all_movies]
+    return vector
+
+
+
 
 def create_signature(vec, hash_functions):
     '''
