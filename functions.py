@@ -127,8 +127,7 @@ def top2_query(user, signature_matrix, band_size, buckets, threshold):
     return top_2_users
 
     
-    
-def recommend_movie(user_seen_movies, result, df):
+def recommend_movie(user_seen_movies, similar_users, df):
     """
     Recommend a movie based on the logic:
     - If both similar users have rated a movie, recommend this movie based on the average rating.
@@ -142,37 +141,34 @@ def recommend_movie(user_seen_movies, result, df):
     Returns:
         str: Recommended movie ID or a message if no movies can be recommended.
     """
-    # Get seen movies for both similar users
-    seen1 = set(user_seen_movies.iloc[result[0] - 1]['seen_movies'])
-    seen2 = set(user_seen_movies.iloc[result[1] - 1]['seen_movies'])
-    
-    # Find common movies
-    common_movies = seen1.intersection(seen2)
-    
-    if common_movies:
-        # Compute average rating for each common movie
-        common_movies = list(common_movies)  # Convert to list for filtering
-        common_movie_ratings = (
-            df[df['movieId'].isin(common_movies)]
-            .groupby('movieId')['rating']
-            .mean()
-        )
-        # Recommend the movie with the highest average rating
-        recommended_movie = common_movie_ratings.idxmax()
-        title = df.loc[df['movieId'] == recommended_movie, 'title'].values[0]
-        return f"Recommended movie based on common ratings: Movie ID {recommended_movie}: '{title}' "
-    
-    else:
-        # No common movies, recommend top-rated movies seen by the most similar user
-        seen_by_top_user = list(seen1)  # Use the first similar user as the reference
-        top_user_movies = (
-            df[df['movieId'].isin(seen_by_top_user)]
-            .groupby('movieId')['rating']
-            .mean()
-        )
-        if top_user_movies.empty:
-            return "No movies to recommend. Adjust parameters or input data."
-        recommended_movie = top_user_movies.idxmax()
-        title = df.loc[df['movieId'] == recommended_movie, 'title'].values[0]
 
-        return f"Recommended movie based on top-rated movies of user {result[0]}: Movie ID {recommended_movie}: '{title}'"
+
+    seen1 = set(user_seen_movies.iloc[similar_users[0] - 1]['seen_movies'])
+    seen2 = set(user_seen_movies.iloc[similar_users[1] - 1]['seen_movies'])
+    common_movies = seen1.intersection(seen2)
+
+    if common_movies:
+        # Calculate the average rating only for the two similar users
+        common_ratings = df[df['movieId'].isin(common_movies)]
+        common_ratings = common_ratings[common_ratings['userId'].isin(similar_users)]
+        avg_ratings = common_ratings.groupby('movieId')['rating'].mean().reset_index()
+        avg_ratings = avg_ratings.sort_values(by='rating', ascending=False).head(5)
+
+        # Fetch titles for the top movies
+        top_movies = avg_ratings.merge(df[['movieId', 'title']].drop_duplicates(), on='movieId', how='left')
+        top_movies = top_movies.rename(columns={'rating': 'avg_rating'})
+
+        # Use tabulate to format the DataFrame
+        out = "Top 5 recommended movies based on common ratings:"
+        return out, top_movies
+
+    else:
+        # If no common movies, recommend the top movies of the first similar user
+        first_user_movies = user_seen_movies.iloc[similar_users[0] - 1]['seen_movies']
+        first_user_ratings = df[df['movieId'].isin(first_user_movies)]
+        first_user_ratings = first_user_ratings[first_user_ratings['userId'] == similar_users[0]]
+        top_movies = first_user_ratings.sort_values(by='rating', ascending=False).head(5)[['movieId', 'rating', 'title']]
+        top_movies = top_movies.rename(columns={'rating': 'avg_rating'})
+
+        out = "No common movies found. Top 5 movies rated by user {similar_users[0]}"
+        return out, top_movies
