@@ -12,18 +12,18 @@ def extract_year(df, title_column='title', year_column='year'):
     Removes the year from the title column.
 
     Inputs:
-    - df: DataFrame.
-    - title_column: Name of the column containing the titles.
-    - year_column: Name of the new column for the extracted years.
+        df: DataFrame.
+        title_column: Name of the column containing the titles.
+        year_column: Name of the new column for the extracted years.
 
     Outputs:
-    - df: DataFrame with the new year column and cleaned title column.
+        df: DataFrame with the new year column and cleaned title column.
     '''
     # Regex pattern to recognize the year in format "(YYYY)"
     year_pattern = r'\((\d{4})\)'
 
     # Extract the year and remove it from the title
-    df[year_column] = df[title_column].str.extract(year_pattern).astype(float)
+    df[year_column] = df[title_column].str.extract(year_pattern).astype(int)
     df[title_column] = df[title_column].str.replace(year_pattern, '', regex=True).str.strip()
     return df
 
@@ -31,13 +31,13 @@ def extract_year(df, title_column='title', year_column='year'):
 def preprocess_text(doc):
     '''
     Function that preprocesses a document by:
-    - Tokenizing, removing stopwords, punctuation, and stemming the tokens.
+        Tokenizing, removing stopwords, punctuation, and stemming the tokens.
 
-    Input:
-    doc: document to preprocess
+    Inputs:
+        doc: document to preprocess
 
-    Output:
-    tokens: list of cleaned tokens
+    Outputs:
+        tokens: list of cleaned tokens
     '''
 
     # Check if the input is a string, if not return an empty list
@@ -65,17 +65,30 @@ def preprocess_text(doc):
 
 
 def get_embedding(model, tokens):
-    # Compute the embeddings mean for each token in each cell
+    ''' 
+    Compute the embeddings mean vector for each token in each cell.
+
+    Inputs:
+        model: Word2Vec model that contains numeric vectors for words (model.wv).
+        tokens: List of tokenized and cleaned text
+    Outputs:
+        A numeric vector (embedding) that represents the mean embedding of the tokens in the input text. 
+        If no embeddings are found, a zero vector is returned.
+    '''
+    # List that contains the embeddings of the tokens found in the model's vocabulary
     embeddings = []
-    # Consider that some cell has more than one word so in the tokenization process this will become a list of words
+
+    # Iterate through each token in each cell, considering that some cells has more than one token
     for token in tokens:
-        # Check if the token is beign computed by the model
+        # Check if the token exists in the model's vocabulary (i.e., it has an embedding)
         if token in model.wv:
-            # Join the embedding for each world
+            # Add the embedding of the token to the list of embeddings
             embeddings.append(model.wv[token])
+
+    # If there are any valid embeddings(list is not empty)
     if embeddings:
-        # Compute the mean of the embedding vector
+        # Compute the mean of the embeddings to represent the text
         return np.mean(embeddings, axis=0)
     else:
-        # If the embedding is not computed return a full of zero array
+        # If the embedding is not computed return a zero array of the same size as the model's embeddings
         return np.zeros(model.vector_size)
