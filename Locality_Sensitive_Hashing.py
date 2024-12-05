@@ -1,72 +1,6 @@
 import math
 import numpy as np
 from scipy.sparse import csr_matrix
-
-def char_vec(seen_movies, all_movies):
-    '''
-    Create a characteristic vector for a user's seen movies.
-    Return the result as a sparse matrix for memory efficiency.
-    '''
-    all_movies = np.array(all_movies, dtype=int)
-
-    # Create a binary vector (sparse format)
-    vec = np.zeros(len(all_movies), dtype=int)
-
-    for movie in seen_movies:
-        # Locate the index of the movie in all_movies and set that position to 1
-        movie_idx = np.where(all_movies == movie)[0]
-        if movie_idx.size > 0:
-            vec[movie_idx[0]] = 1
-    
-    # Return as a sparse matrix (compressed sparse row format)
-    return csr_matrix(vec)
-
-
-import random
-
-
-def minhash(vec, num_hash_functions, coeff_a, coeff_b, prime):
-    """
-    Generate a MinHash signature for a given characteristic vector using NumPy.
-    
-    Parameters:
-    - vec: A characteristic vector in sparse format (csr_matrix).
-    - num_hash_functions: The number of hash functions to use.
-    - coeff_a: Array of random coefficients 'a' for hash functions.
-    - coeff_b: Array of random coefficients 'b' for hash functions.
-    - prime: A prime number
-
-    Returns:
-    - sign: A NumPy array containing the MinHash signature, where each entry
-            is the minimum hash value of indices corresponding to 1 in `vec`.
-    """
-    # Find indices where vec == 1
-    nonzero_indices = vec.indices
-
-    # If no indices have value 1, return infinity for all hash functions
-    if len(nonzero_indices) == 0:
-        return np.full(num_hash_functions, np.inf)
-    
-    # Compute hash values for all non-zero indices using vectorized operations
-    hashes = (coeff_a[:, None] * nonzero_indices + coeff_b[:, None]) % prime    
-    
-    # Find the minimum hash value for each hash function
-    sign = np.min(hashes, axis=1)
-    
-    return sign
-
-def jaccard_sim(a , b):
-    '''
-    takes in imput two lists and computes the jaccard similarity between them
-    '''
-    set1 = set(a)
-    set2 = set(b)
-    intersection = len (set1.intersection(set2))
-    union = len (set1.union(set2))
-
-    return intersection/union
-
-
 from collections import defaultdict
 
 def lsh(signature_matrix, band_size):
@@ -79,6 +13,12 @@ def lsh(signature_matrix, band_size):
 
     Returns:
         list of dict: Each element is a dictionary representing buckets for a band.
+    
+    Function Description:
+    - The function performs Locality-Sensitive Hashing by dividing the signature matrix into bands of size `band_size`.
+    - For each band, the rows are grouped together to form a signature, which is used as the key in the corresponding bucket.
+    - Items (columns in the signature matrix) that share the same signature are added to the same bucket.
+    - The resulting `buckets` list contains one dictionary per band, where each dictionary maps band signatures to a list of item indices with that signature.
     """
     n_rows, n_cols = signature_matrix.shape
     assert n_rows % band_size == 0, "The number of rows must be divisible by the band size."
@@ -102,7 +42,27 @@ def lsh(signature_matrix, band_size):
 
 
 def top2_query(user, signature_matrix, band_size, buckets, threshold):
-    
+    '''
+    Identify the two most similar users to the given user based on LSH buckets and MinHash signatures.
+
+    Parameters:
+    -user (int): The ID of the user for whom similar users are to be identified.
+    -signature_matrix (numpy.ndarray): The MinHash signature matrix with rows as hash functions and columns as users.
+    -band_size (int): The number of rows in each band for LSH.
+    -buckets (list of dict): The bucket structure created during LSH, mapping band signatures to user indices.
+    -threshold (int): The minimum number of common buckets required to consider users as similar.
+
+    Returns:
+        list of int: The IDs of the top 2 most similar users, in 1-based index format.
+        str: A message indicating no similar users were found if the result is empty.
+
+    Function Description:
+    - The function computes the "band signature" for the target user across all bands.
+    - It then compares this signature with others in the same bucket to count the occurrences of similar users.
+    - Only users with a similarity count exceeding the threshold are considered.
+    - The users are sorted based on their similarity count, and the top two similar users are returned.
+    - If no users meet the threshold, a message suggesting parameter adjustment is returned.
+    '''
     user_column = user-1
     similarity_count = defaultdict(int)
 
