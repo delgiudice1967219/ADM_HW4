@@ -1,9 +1,9 @@
-import math
 import numpy as np
 from scipy.sparse import csr_matrix
 
+
 def char_vec(seen_movies, all_movies):
-    '''
+    """
     Create a characteristic vector for a user's seen movies.
     Return the result as a sparse matrix to save memory for large datasets.
 
@@ -15,7 +15,7 @@ def char_vec(seen_movies, all_movies):
     -scipy.sparse.csr_matrix: A sparse binary vector of size len(all_movies), where:
         - Each position corresponds to a movie in all_movies.
         - The value is 1 if the movie is in seen_movies, otherwise 0.
-    '''
+    """
     all_movies = np.array(all_movies, dtype=int)
 
     # Create a binary vector (sparse format)
@@ -31,7 +31,6 @@ def char_vec(seen_movies, all_movies):
     return csr_matrix(vec)
 
 
-import random
 def minhash(vec, num_hash_functions, coeff_a, coeff_b, prime):
     """
     Generate a MinHash signature for a given characteristic vector using NumPy.

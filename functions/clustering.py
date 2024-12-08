@@ -166,10 +166,14 @@ def kmeans_plus_plus(data, k, max_iterations=100, tolerance=1e-4):
         probabilities = distances.map(lambda d: d ** 2 / total_distance)
 
         # Choose the next centroid based on these probabilities
+        # Pick a random value between 0 and 1
         r = np.random.random()
         cumulative_prob = 0.0
+        # For each point, compute the cumulative sum of probabilities
         for point, prob in zip(data.collect(), probabilities.collect()):
             cumulative_prob += prob
+            # When the cumulative probability surpasses the random value r
+            # the point is chosen as the next centroid
             if cumulative_prob >= r:
                 centroids.append(point)
                 break

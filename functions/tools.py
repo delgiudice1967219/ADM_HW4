@@ -1,7 +1,7 @@
 def sign_agreement(a, b):
-    '''
-    take in imput two lists and computes the frequency of ordered components agreements
-    '''
+    """
+    Takes in input two lists and computes the frequency of ordered components agreements
+    """
     # Initialize a counter for the number of agreements
     count = 0
     a_list = list(a)
@@ -13,10 +13,11 @@ def sign_agreement(a, b):
 
     return count/len(a)
 
+
 def jaccard_sim(a , b):
-    '''
-    takes in imput two lists and computes the jaccard similarity between them
-    '''
+    """
+    Takes in input two lists and computes the jaccard similarity between them
+    """
     set1 = set(a)
     set2 = set(b)
     intersection = len (set1.intersection(set2))
