@@ -5,7 +5,7 @@ This GitHub repository contains the implementation of the fourth homework of the
 **Team Members:**
 * Xavier Del Giudice, 1967219, delgiudice.1967219@studenti.uniroma1.it
 * Valeria Avino, 1905974, avino.1905974@studenti.uniroma1.it
-* Mattia Mungo, 1883175, Mungo.1883175@studenti.uniroma1.it
+* Mattia Mungo, 1883175, mungo.1883175@studenti.uniroma1.it
 * Davide Vitale, 1794386, vitale.1794386@studenti.uniroma1.it
 
 The ```main.ipynb``` with the main script can be visualized in the jupyter notebook viewer: [nbviewer](https://nbviewer.org/github/delgiudice1967219/ADM_HW4/blob/main/main.ipynb)
@@ -34,35 +34,63 @@ Here are links to all the files:
   * [clustering_animation.py](functions/clustering_animation.py): Scripts for generating iterative clustering visualizations
   * [preprocessing.py](functions/preprocessing.py): Helper utilities for preprocessing and evaluation
   * [minhashing.py](functions/minhashing.py): Functions for generating and using MinHash signatures
-  * [tools.py](functions/tools.py): Helper functions for find similarity
+  * [tools.py](functions/tools.py): Helper functions for calculating similaritiesand matrix operations
 * [.gitignore](.gitignore): File to specify files and directories ignored by Git
 * [README.md](README.md): Project documentation
 * LICENSE: License file for the project
 
 ---
 
+## Technologies Used
+
+### Libraries and Frameworks:
+- **Apache Spark**: Used for distributed data processing and handling large-scale datasets efficiently.
+- **Numpy**: For efficient numerical computations and array manipulations.  
+- **Pandas**: For handling and preprocessing tabular data.  
+- **Scikit-learn**: For clustering algorithms and evaluation metrics.  
+- **Matplotlib**: For plotting and visualizing data.  
+- **Plotly**: For interactive display utilities, used in animations.
+- **nltk**: Used for text preprocessing.
+- **yellowbrick.cluster (KElbowVisualizer)**: Used for determining the optimal number of clusters using the elbow method.
+- **gensim.models.Word2Vec**: Used to represent text data as dense vector spaces for clustering or recommendations.  
+
+---
+
 ## Project Overview
 
 ### **1. Recommendation System with LSH**
-We implemented a recommendation system based on the **Locality-Sensitive Hashing (LSH)** algorithm, using the MovieLens dataset to identify similar users based on their movie preferences. Key steps include:
-- Preprocessing data from the MovieLens dataset.
-- Implementing MinHash from scratch to create compact user signatures.
-- Applying LSH to group similar users.
-- Recommending movies based on user similarity, considering common ratings and top-rated movies of similar users.
+This system utilizes **Locality-Sensitive Hashing (LSH)** to recommend movies based on user preferences:
+- **Steps:**  
+  - **Data Preprocessing:** Cleaned and structured MovieLens data for effective use.  
+  - **MinHash Implementation:** Compressed user data into concise signatures to approximate similarity measures.  
+  - **LSH Application:** Divided user signatures into bands to efficiently identify similar users.  
+  - **Recommendations:** Suggested movies by aggregating preferences from users deemed similar based on common ratings and their top-rated movies.
 
-### **2. Grouping Movies Together**
-Using clustering techniques, we grouped movies based on extracted features. Key highlights include:
-- **Feature Engineering:** Selecting and creating features such as genres, average ratings, and user-assigned tags.
-- **Clustering Algorithms:** Implemented K-means, K-means++, and a third algorithm recommended by an LLM.
-- **Evaluation Metrics:** Assessed cluster quality using metrics like silhouette score, Davies-Bouldin index, and intra-cluster distance.
+---
+
+### **2. Clustering Movies**
+We clustered movies based on their attributes and evaluated the clusters to understand group patterns:
+- **Steps:**  
+  - **Feature Engineering:** Extracted meaningful features, such as genres, average ratings, and tags.  
+  - **Clustering Techniques:** Implemented and compared K-means, K-means++, and hierarchical clustering.  
+  - **Evaluation:** Assessed cluster quality using metrics like silhouette score and Davies-Bouldin index.  
+  - **Visualization:** Generated 2D plots to display clustering results and transitions during algorithm iterations.
+
+---
 
 ### **3. Bonus Question**
-We visualized the progression of clustering over iterations. Using two key variables, we plotted 2D graphs to display how clusters formed and refined.
+We visualized clustering progression:
+- **Steps:**  
+  - **2D Animation:** Animated clustering iterations, showing how clusters formed and stabilized over time.  
+
+---
 
 ### **4. Algorithmic Question**
-This section involved solving a strategic game where two players, Arya and Mario, compete to maximize their score by picking numbers from the ends of a sequence. Our solution:
-- Used recursive and dynamic programming approaches to ensure optimal strategies for both players.
-- Compared the efficiency of different implementations and leveraged LLMs to suggest optimizations.
+Analyzed a strategic game where players maximize scores by selecting numbers from the sequence's ends:
+- **Steps:**  
+  - **Problem Description:** Two players, Arya and Mario, alternately pick numbers from either end of a sequence to maximize their scores.  
+  - **Dynamic Programming:** Implemented a DP-based solution to compute optimal strategies for both players.  
+  - **LLM Optimization:** Used insights from an LLM to refine and compare recursive and DP approaches.
 
 ---
 
