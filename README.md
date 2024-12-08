@@ -4,7 +4,7 @@ This GitHub repository contains the implementation of the fourth homework of the
 
 **Team Members:**
 * Xavier Del Giudice, 1967219, delgiudice.1967219@studenti.uniroma1.it
-* 
+* Valeria Avino, 1905974, avino.1905974@studenti.uniroma1.it
 * 
 
 The ```main.ipynb``` with the main script can be visualized in the jupyter notebook viewer: [nbviewer](https://nbviewer.org/github/delgiudice1967219/ADM_HW3/blob/main/main.ipynb)
