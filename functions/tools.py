@@ -14,13 +14,13 @@ def sign_agreement(a, b):
     return count/len(a)
 
 
-def jaccard_sim(a , b):
+def jaccard_sim(a, b):
     """
     Takes in input two lists and computes the jaccard similarity between them
     """
     set1 = set(a)
     set2 = set(b)
-    intersection = len (set1.intersection(set2))
-    union = len (set1.union(set2))
+    intersection = len(set1.intersection(set2))
+    union = len(set1.union(set2))
 
     return intersection/union

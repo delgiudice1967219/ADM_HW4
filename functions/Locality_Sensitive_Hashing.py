@@ -12,11 +12,14 @@ def lsh(signature_matrix, band_size):
     Returns:
         list of dict: Each element is a dictionary representing buckets for a band.
     
-    Function Description:
-    - The function performs Locality-Sensitive Hashing by dividing the signature matrix into bands of size `band_size`.
-    - For each band, the rows are grouped together to form a signature, which is used as the key in the corresponding bucket.
-    - Items (columns in the signature matrix) that share the same signature are added to the same bucket.
-    - The resulting `buckets` list contains one dictionary per band, where each dictionary maps band signatures to a list of item indices with that signature.
+    Function Description: - The function performs Locality-Sensitive Hashing by dividing the signature matrix into
+    bands of size `band_size`.
+    - For each band, the rows are grouped together to form a signature, which is used as
+    the key in the corresponding bucket.
+    - Items (columns in the signature matrix) that share the same signature are
+    added to the same bucket.
+    - The resulting `buckets` list contains one dictionary per band, where each dictionary
+    maps band signatures to a list of item indices with that signature.
     """
 
     n_rows, n_cols = signature_matrix.shape

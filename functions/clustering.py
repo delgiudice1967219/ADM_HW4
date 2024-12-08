@@ -55,7 +55,7 @@ def euclidean_distance(point1, point2):
     Outputs:
         Euclidean distance between p1 and p2
     """
-    return np.sqrt(np.sum((np.array(point1) - np.array(point2))**2))
+    return np.sqrt(np.sum((np.array(point1) - np.array(point2)) ** 2))
 
 
 def closest_centroid(point, centroids):
@@ -115,12 +115,14 @@ def kmeans(data, k, max_iterations=100, tolerance=1e-4):
         # the second element are the coordinates of the new centroid assigned to that cluster
         new_centroids = (
             clusters
-            .mapValues(lambda x: (x, 1))  #Add a counter 1 to each point, transforming each point into a pair ([coordinates], 1)
-            .reduceByKey(lambda a, b: ([a[0][i] + b[0][i] for i in range(len(a[0]))], a[1] + b[1]))  # Aggregate coordinates and counts
+            .mapValues(lambda x: (x, 1))  # Add a counter 1 to each point, transforming each point into a pair
+            # ([coordinates], 1)
+            .reduceByKey(lambda a, b: ([a[0][i] + b[0][i] for i in range(len(a[0]))], a[1] + b[1]))  # Aggregate
+            # coordinates and counts
             .mapValues(lambda x: [val / x[1] for val in x[0]])  # Compute average (new centroid)
-            .collect() # Collect results as a list
+            .collect()  # Collect results as a list
         )
-        
+
         # Extract only the centroids coordinates from the list of tuples.
         # Each tuple contains the centroid index and its new coordinates
         new_centroids = [centroid[1] for centroid in new_centroids]
@@ -208,7 +210,7 @@ def kmeans_plus_plus(data, k, max_iterations=100, tolerance=1e-4):
         # otherwise stop the algorithm, it reaches the convergence
         if all(euclidean_distance(c1, c2) < tolerance for c1, c2 in zip(centroids, new_centroids)):
             break
-        
+
         # Update centroids
         centroids = new_centroids
 
@@ -232,14 +234,14 @@ def plot_clustering(centroids, assignments):
     """
     # Define colors for each cluster
     cluster_colors = [
-        (0, 128/255, 0),
-        (54/255, 162/255, 235/255),
-        (255/255, 159/255, 64/255),
-        (128/255, 0, 128/255) 
+        (0, 128 / 255, 0),
+        (54 / 255, 162 / 255, 235 / 255),
+        (255 / 255, 159 / 255, 64 / 255),
+        (128 / 255, 0, 128 / 255)
     ]
-    
+
     # Labels for clusters
-    cluster_labels = [f"Cluster {i+1}" for i in range(len(cluster_colors))]
+    cluster_labels = [f"Cluster {i + 1}" for i in range(len(cluster_colors))]
 
     # Extract coordinates of each point and their assignation to the cluster
     labels = np.array([assignment[0] for assignment in assignments])  # Extract cluster labels
