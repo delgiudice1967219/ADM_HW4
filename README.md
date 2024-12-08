@@ -51,17 +51,17 @@ Here are links to all the files:
 - **Matplotlib**: For plotting and visualizing data.  
 - **Plotly**: For interactive display utilities, used in animations.
 - **nltk**: Used for text preprocessing.
-- **yellowbrick.cluster (KElbowVisualizer)**: Used for determining the optimal number of clusters using the elbow method.
-- **gensim.models.Word2Vec**: Used to represent text data as dense vector spaces for clustering or recommendations.  
+- **yellowbrick**: Used for determining the optimal number of clusters using the elbow method.
+- **gensim(Word2Vec)**: Used to represent text data as dense vector spaces for clustering or recommendations.  
 
 ---
 
 ## Project Overview
 
 ### **1. Recommendation System with LSH**
-This system utilizes **Locality-Sensitive Hashing (LSH)** to recommend movies based on user preferences:
+We implemented a recommendation system based on the **Locality-Sensitive Hashing (LSH)** algorithm, using the MovieLens dataset to identify similar users based on their movie preferences.
 - **Steps:**  
-  - **Data Preprocessing:** Cleaned and structured MovieLens data for effective use.  
+  - **Data Exploration:** Understand and preprocess the structure of the MovieLens data for effective use.  
   - **MinHash Implementation:** Compressed user data into concise signatures to approximate similarity measures.  
   - **LSH Application:** Divided user signatures into bands to efficiently identify similar users.  
   - **Recommendations:** Suggested movies by aggregating preferences from users deemed similar based on common ratings and their top-rated movies.
@@ -71,15 +71,16 @@ This system utilizes **Locality-Sensitive Hashing (LSH)** to recommend movies ba
 ### **2. Clustering Movies**
 We clustered movies based on their attributes and evaluated the clusters to understand group patterns:
 - **Steps:**  
-  - **Feature Engineering:** Extracted meaningful features, such as genres, average ratings, and tags.  
-  - **Clustering Techniques:** Implemented and compared K-means, K-means++, and hierarchical clustering.  
-  - **Evaluation:** Assessed cluster quality using metrics like silhouette score and Davies-Bouldin index.  
-  - **Visualization:** Generated 2D plots to display clustering results and transitions during algorithm iterations.
+  - **Feature Engineering:** Extracted meaningful features, such as genres, average ratings and tags.
+  - **PCA:** Applied Principal Component Analysis to reduce dimensionality of the dataset.
+  - **Clustering Techniques:** Implemented and compared K-means, K-means++, and DBSCAN.  
+  - **Evaluation:** Assessed cluster quality using metrics like silhouette score, Davies-Bouldin index and Calinski-Harabasz Index.  
+  - **Visualization:** Generated 2D plots to display clustering results.
 
 ---
 
 ### **3. Bonus Question**
-We visualized clustering progression:
+We visualized the progression of clustering over iterations, using the two principal components:
 - **Steps:**  
   - **2D Animation:** Animated clustering iterations, showing how clusters formed and stabilized over time.  
 
